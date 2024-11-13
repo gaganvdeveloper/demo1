@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
@@ -39,10 +40,23 @@ public class RegisterServlet extends HttpServlet {
 			int row = ps.executeUpdate();
 			if (row == 1) {
 				PrintWriter pw = res.getWriter();
-				pw.write("<html><body><h1>Your Account Created Successfully </h1></body></html>");
-				RequestDispatcher rd = req.getRequestDispatcher("index.jsp");
-//				rd.forward(req, res);
-				rd.include(req, res);
+				pw.write("<html><body><h1>Registration Successfull</h1></body></html>");
+				try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					 con = DriverManager.getConnection("jdbc:mysql://localhost:3306/instagram", "root", "root");
+					 ps = con.prepareStatement("select * from user");
+
+					ResultSet rs = ps.executeQuery();
+
+					req.setAttribute("rs", rs);
+
+					RequestDispatcher rd = req.getRequestDispatcher("home.jsp");
+					rd.include(req, res);
+
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+
 			}
 			ps.close();
 			con.close();

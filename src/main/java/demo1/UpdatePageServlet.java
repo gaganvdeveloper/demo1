@@ -15,44 +15,45 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 
-import com.mysql.cj.protocol.SocksProxySocketFactory;
-@WebServlet("/delete")
-public class DeleteServlet extends HttpServlet{
+@WebServlet("/updatepage")
+public class UpdatePageServlet extends HttpServlet {
 	@Override
 	public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+
 		String sid = req.getParameter("id");
+		
 		int id = Integer.parseInt(sid);
+		
+		
+		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/instagram","root","root");
-			PreparedStatement ps = con.prepareStatement("delete from user where id=?");
+			PreparedStatement ps = con.prepareStatement("select * from user where id=?");
 			ps.setInt(1, id);
-			int row = ps.executeUpdate();
-			if(row==1) {
-				PrintWriter pw = res.getWriter();
-				pw.write("<html><body><h1>Deleted Successfully...</h1></body></html>");
-				
-				try {
-					Class.forName("com.mysql.cj.jdbc.Driver");
-					 con = DriverManager.getConnection("jdbc:mysql://localhost:3306/instagram", "root", "root");
-					 ps = con.prepareStatement("select * from user");
-
-					ResultSet rs = ps.executeQuery();
-
-					req.setAttribute("rs", rs);
-
-					RequestDispatcher rd = req.getRequestDispatcher("home.jsp");
-					rd.include(req, res);
-
-				} catch (ClassNotFoundException | SQLException e) {
-					e.printStackTrace();
-				}
-
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				req.setAttribute("rs", rs);
+				RequestDispatcher rd = req.getRequestDispatcher("update.jsp");
+				rd.forward(req, res);
 			}
-			ps.close();
-			con.close();
+			else {
+				PrintWriter pw = res.getWriter();
+				pw.write("<h1 style='color:red;'>Invalid User Id</h1>");
+				
+			}
+			
+			
+			
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
+		
+		
+		
+		
+		
+	
 	}
 }

@@ -7,11 +7,19 @@
 <head>
 <meta charset="UTF-8">
 <title>Home Page</title>
+<style type="text/css">
+#createbut{
+	margin-left: 70%;
+}
+
+
+
+</style>
 </head>
 <body>
 
 	<h1 style="text-align: center;">All Users</h1>
-
+	<a id="createbut" href="reg.jsp"><button>Create</button></a>
 	<table border="3" cellpadding="10" cellspacing="10" style="border-collapse: collapse; margin: auto;"> 
 		<tr>
 			<th>Id</th>
@@ -34,7 +42,7 @@
 			<td><%=rs.getLong(4)%></td>
 			<td><%=rs.getString(5)%></td>
 			<td> <a href="delete?id=<%=rs.getInt(1) %>"><button>Delete</button></a> </td>
-			<td> <button>Update</button> </td>
+			<td> <a href="updatepage?id=<%= rs.getInt(1) %>"><button>Update</button></a> </td>
 		</tr>
 		<%
 		}
